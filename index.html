@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Study Desk</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page">
+
+    <header>
+      <h1>Study Desk</h1>
+      <p>Ringkas catatanmu, lalu belajar pakai flashcard.</p>
+      <button id="themeBtn" class="soft theme-btn">Mode gelap</button>
+    </header>
+
+    <!-- Hitungan hari belajar -->
+    <div class="stats">
+      <div class="stat"><strong id="streakNum">0</strong><span>hari berturut-turut</span></div>
+      <div class="stat"><strong id="totalDays">0</strong><span>total hari belajar</span></div>
+      <div class="stat"><strong id="todayStatus">Belum</strong><span>belajar hari ini</span></div>
+    </div>
+
+    <!-- Bagian 1: ringkasan -->
+    <section class="box summary-box">
+      <h2>1. Ringkas catatan</h2>
+
+      <!-- pilihan: unggah file materi (selain mengetik) -->
+      <div class="upload-row">
+        <input id="fileInput" class="sr-only" type="file" accept=".txt,.md,.markdown,.csv,.pdf,.docx,.pptx">
+        <label for="fileInput" class="file-btn">Unggah file</label>
+        <span id="fileName" class="file-name">atau ketik / tempel di bawah. Bisa .txt .md .pdf .docx .pptx</span>
+      </div>
+
+      <textarea id="notes" placeholder="Tempel catatan atau materi kuliah di sini..."></textarea>
+      <div class="buttons">
+        <button id="summarizeBtn">Ringkas</button>
+        <button id="makeCardsBtn" class="soft">Buat flashcard</button>
+      </div>
+      <p id="summary" class="result"></p>
+    </section>
+
+    <!-- Bagian 2: flashcard + progress -->
+    <section class="box cards-box">
+      <h2>2. Flashcard</h2>
+
+      <!-- progress belajar -->
+      <div class="progress-info">
+        <span id="progressText">0 dari 0 kartu hafal</span>
+        <span id="progressPercent">0%</span>
+      </div>
+      <div class="progress"><div id="progressBar"></div></div>
+
+      <div id="card">Belum ada kartu</div>
+      <p id="counter" class="hint"></p>
+
+      <div class="buttons center">
+        <button id="prevBtn" class="soft">&larr; Sebelumnya</button>
+        <button id="flipBtn" class="soft">Balik</button>
+        <button id="nextBtn" class="soft">Berikutnya &rarr;</button>
+      </div>
+
+      <div class="buttons center">
+        <button id="unknownBtn" class="soft">Belum hafal</button>
+        <button id="knownBtn">Sudah hafal &#10003;</button>
+      </div>
+
+      <hr class="divider">
+
+      <h3>Tambah kartu sendiri</h3>
+      <input id="question" placeholder="Pertanyaan">
+      <input id="answer" placeholder="Jawaban">
+      <div class="buttons">
+        <button id="addBtn">Tambah kartu</button>
+        <button id="deleteBtn" class="soft">Hapus kartu ini</button>
+        <button id="resetBtn" class="soft">Reset progress</button>
+      </div>
+    </section>
+
+    <!-- Bagian 3: mode kuis -->
+    <section class="box quiz-box">
+      <h2>3. Mode kuis</h2>
+
+      <div id="quizStart">
+        <p class="quiz-note">Jawab pertanyaan dari flashcardmu secara acak (maksimal 10 soal).</p>
+        <button id="startQuizBtn">Mulai kuis</button>
+        <p id="quizMessage" class="result"></p>
+      </div>
+
+      <div id="quizPlay" hidden>
+        <div class="progress-info">
+          <span id="quizCount">Soal 1 dari 10</span>
+          <span id="quizScoreText">Benar: 0</span>
+        </div>
+        <div class="progress"><div id="quizBar"></div></div>
+
+        <div id="quizQuestion" class="quiz-q"></div>
+        <input id="quizInput" placeholder="Ketik jawabanmu lalu tekan Enter...">
+        <div class="buttons">
+          <button id="checkBtn">Periksa</button>
+          <button id="nextQuizBtn" hidden>Soal berikutnya</button>
+        </div>
+        <p id="quizFeedback" class="result"></p>
+      </div>
+
+      <div id="quizEnd" hidden>
+        <div class="score" id="quizFinalScore"></div>
+        <p id="quizFinalText" class="hint"></p>
+        <div class="buttons center">
+          <button id="againQuizBtn">Ulangi kuis</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bagian 4: log progress mingguan -->
+    <section class="box log-box">
+      <h2>4. Log progress mingguan</h2>
+
+      <div class="progress-info">
+        <span id="logText">0 dari 8 minggu terisi</span>
+        <span id="logPercent">0%</span>
+      </div>
+      <div class="progress"><div id="logBar"></div></div>
+
+      <div class="two-cols">
+        <div>
+          <label for="weekNo">Minggu ke-</label>
+          <input id="weekNo" type="number" min="1" value="1">
+        </div>
+        <div>
+          <label for="weekTotal">Jumlah minggu</label>
+          <input id="weekTotal" type="number" min="1" value="8">
+        </div>
+      </div>
+
+      <label for="logDone">Dikerjakan</label>
+      <textarea id="logDone" class="small" placeholder="Contoh: Menentukan ide, menyusun konsep besar..."></textarea>
+      <label for="logProblem">Kendala</label>
+      <textarea id="logProblem" class="small" placeholder="Contoh: Kesulitan dalam prompting..."></textarea>
+
+      <div class="buttons">
+        <button id="saveWeekBtn">Simpan minggu ini</button>
+        <button id="copyLogBtn" class="soft">Salin untuk spreadsheet</button>
+      </div>
+
+      <div class="table-wrap"><table id="logTable"></table></div>
+    </section>
+
+  </div>
+
+  <!-- Library untuk membaca PDF (pdf.js) dan Word/PowerPoint (JSZip). Butuh internet. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
