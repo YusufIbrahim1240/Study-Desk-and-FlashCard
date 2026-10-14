@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* Font elegan dari Google Fonts (butuh internet, kalau offline otomatis pakai font cadangan) */
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600&display=swap");
 
@@ -736,4 +737,287 @@ td:last-child {
   h1 { font-size: 1.6rem; }
   .summary-box textarea { min-height: 70px; }
   textarea.small { height: 52px; }
+=======
+/* Font elegan dari Google Fonts (butuh internet, kalau offline otomatis pakai font cadangan) */
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600&display=swap");
+
+/* ---------- Warna & ukuran: ganti di sini saja ---------- */
+:root {
+  --bg-1: #f8f7f3;          /* latar atas (gading) */
+  --bg-2: #ece9df;          /* latar bawah */
+  --box: rgba(255, 255, 255, 0.88);
+  --text: #2b2f2c;
+  --muted: #85897f;
+  --line: #e6e3d8;
+  --accent: #2f6b57;        /* hijau zamrud */
+  --accent-2: #4f8f78;      /* hijau sage */
+  --accent-soft: #e6efe9;
+  --gold: #c9a45c;          /* aksen emas tipis */
+  --radius: 20px;
+  --shadow: 0 10px 30px rgba(40, 60, 50, 0.10);
+  --shadow-strong: 0 16px 40px rgba(40, 60, 50, 0.16);
+  --glow: 0 6px 16px rgba(47, 107, 87, 0.30);         /* bayangan tombol */
+  --glow-strong: 0 10px 22px rgba(47, 107, 87, 0.38); /* saat disentuh kursor */
+}
+
+/* ---------- Dasar halaman ---------- */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: "Poppins", "Segoe UI", system-ui, sans-serif;
+  line-height: 1.7;
+  background: linear-gradient(160deg, var(--bg-1), var(--bg-2));
+  background-attachment: fixed;
+}
+
+::selection {
+  background: var(--accent-soft);
+}
+
+.page {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 48px 18px 64px;
+}
+
+/* ---------- Judul ---------- */
+header {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+h1 {
+  margin: 0;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 2.8rem;
+  letter-spacing: 0.5px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* garis emas kecil di bawah judul */
+h1::after {
+  content: "";
+  display: block;
+  width: 56px;
+  height: 3px;
+  margin: 10px auto 0;
+  border-radius: 3px;
+  background: var(--gold);
+}
+
+header p {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+h2 {
+  margin: 0 0 16px;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.35rem;
+}
+
+h3 {
+  margin: 28px 0 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ---------- Kotak (section) ---------- */
+.box {
+  margin-bottom: 24px;
+  padding: 28px;
+  background: var(--box);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(8px);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.box:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-strong);
+}
+
+/* ---------- Kolom isian ---------- */
+textarea,
+input {
+  width: 100%;
+  padding: 14px 16px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: #fdfdfb;
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+textarea {
+  height: 150px;
+  resize: vertical;
+}
+
+input {
+  margin-bottom: 10px;
+}
+
+textarea::placeholder,
+input::placeholder {
+  color: #b3b6ab;
+}
+
+textarea:focus,
+input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+/* ---------- Tombol ---------- */
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.center {
+  justify-content: center;
+}
+
+button {
+  padding: 11px 22px;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: white;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: var(--glow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--glow-strong);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button:focus-visible {
+  outline: 3px solid var(--accent-soft);
+  outline-offset: 2px;
+}
+
+/* tombol pendukung: lebih tenang */
+button.soft {
+  color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: none;
+}
+
+button.soft:hover {
+  box-shadow: var(--shadow);
+}
+
+/* ---------- Hasil ringkasan ---------- */
+.result {
+  margin: 20px 0 0;
+  padding: 16px 18px;
+  background: var(--accent-soft);
+  border-left: 4px solid var(--gold);
+  border-radius: 12px;
+  font-size: 0.95rem;
+}
+
+/* sembunyikan kotak hasil kalau masih kosong */
+.result:empty {
+  display: none;
+}
+
+.hint {
+  margin: 12px 0 0;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+/* ---------- Kartu flashcard ---------- */
+#card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 190px;
+  padding: 28px;
+  text-align: center;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.35rem;
+  line-height: 1.5;
+  color: var(--text);
+  background: white;
+  border: 1.5px solid var(--line);
+  border-top: 4px solid var(--gold);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-strong);
+}
+
+/* kartu saat menampilkan jawaban */
+#card.answer {
+  color: white;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  border-color: transparent;
+  border-top-color: var(--gold);
+  animation: pop 0.35s ease;
+}
+
+@keyframes pop {
+  from {
+    opacity: 0.4;
+    transform: scale(0.96) rotateX(25deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotateX(0);
+  }
+}
+
+/* ---------- Layar HP ---------- */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 2.2rem;
+  }
+
+  .box {
+    padding: 20px;
+  }
+
+  button {
+    flex: 1 1 auto;
+  }
+>>>>>>> 0be447b064e59b31bb0a02c59eb8b8a5adc7c4ff
 }
