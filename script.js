@@ -13,13 +13,10 @@ var progressText = document.getElementById("progressText");
 var progressPercent = document.getElementById("progressPercent");
 
 // ---------- Langkah 3: simpan & muat kartu (localStorage) ----------
-// localStorage = "lemari kecil" di browser. Kartu tidak hilang saat halaman di-refresh.
 function save() {
   try {
     localStorage.setItem("studydesk-cards", JSON.stringify(cards));
-  } catch (e) {
-    // kalau gagal menyimpan, abaikan saja
-  }
+  } catch (e) {}
 }
 
 function load() {
@@ -35,6 +32,7 @@ function load() {
 
 // ---------- Langkah 4: memotong teks jadi kalimat ----------
 function getSentences(text) {
+  if (!text) return [];
   var sentences = text.match(/[^.!?]+[.!?]/g);
   if (sentences === null) {
     return [];
@@ -45,12 +43,11 @@ function getSentences(text) {
 }
 
 // ---------- Langkah 5: meringkas ----------
-// Ide: kata yang sering muncul itu penting.
-// Kalimat yang banyak berisi kata penting juga penting.
 function summarize() {
+  if (!notesBox) return;
   var sentences = getSentences(notesBox.value);
   if (sentences.length < 2) {
-    summaryText.textContent = "Tempel minimal dua kalimat dulu ya.";
+    if (summaryText) summaryText.textContent = "Tempel minimal dua kalimat dulu ya.";
     return;
   }
 
@@ -73,11 +70,14 @@ function summarize() {
   var best = scored.slice(0, 3);
   best.sort(function (a, b) { return a.position - b.position; });
 
-  summaryText.textContent = best.map(function (s) { return s.text; }).join(" ");
+  if (summaryText) {
+    summaryText.textContent = best.map(function (s) { return s.text; }).join(" ");
+  }
 }
 
 // ---------- Langkah 6: buat flashcard dari catatan ----------
 function makeCards() {
+  if (!notesBox) return;
   var sentences = getSentences(notesBox.value);
   var added = 0;
 
@@ -98,7 +98,7 @@ function makeCards() {
     }
   });
 
-  summaryText.textContent = added + " flashcard ditambahkan.";
+  if (summaryText) summaryText.textContent = added + " flashcard ditambahkan.";
   if (added > 0) {
     current = cards.length - 1;
     showingAnswer = false;
@@ -108,7 +108,6 @@ function makeCards() {
 }
 
 // ---------- Langkah 7: progress belajar ----------
-// persen = kartu yang hafal / semua kartu x 100
 function updateProgress() {
   var total = cards.length;
   var knownCount = cards.filter(function (card) {
@@ -120,19 +119,20 @@ function updateProgress() {
     percent = Math.round((knownCount / total) * 100);
   }
 
-  progressText.textContent = knownCount + " dari " + total + " kartu hafal";
-  progressPercent.textContent = percent + "%";
-  progressBar.style.width = percent + "%";
+  if (progressText) progressText.textContent = knownCount + " dari " + total + " kartu hafal";
+  if (progressPercent) progressPercent.textContent = percent + "%";
+  if (progressBar) progressBar.style.width = percent + "%";
 }
 
 // ---------- Langkah 8: tampilkan kartu ----------
 function showCard() {
   updateProgress();
+  if (!cardBox) return;
 
   if (cards.length === 0) {
     cardBox.textContent = "Belum ada kartu";
     cardBox.className = "";
-    counter.textContent = "";
+    if (counter) counter.textContent = "";
     return;
   }
 
@@ -150,7 +150,9 @@ function showCard() {
   }
   cardBox.className = classes;
 
-  counter.textContent = "Kartu " + (current + 1) + " dari " + cards.length + " (klik kartu untuk membalik)";
+  if (counter) {
+    counter.textContent = "Kartu " + (current + 1) + " dari " + cards.length + " (klik kartu untuk membalik)";
+  }
 }
 
 function flip() {
@@ -178,8 +180,8 @@ function mark(isKnown) {
   if (cards.length === 0) return;
   cards[current].known = isKnown;
   save();
-  recordStudy();   // hari ini dihitung sebagai hari belajar
-  next(); // langsung pindah ke kartu berikutnya
+  recordStudy();
+  next();
 }
 
 function resetProgress() {
@@ -195,7 +197,7 @@ function resetProgress() {
 function addCard() {
   var q = document.getElementById("question");
   var a = document.getElementById("answer");
-  if (q.value === "" || a.value === "") return;
+  if (!q || !a || q.value === "" || a.value === "") return;
 
   cards.push({ question: q.value, answer: a.value, known: false });
   q.value = "";
@@ -208,7 +210,7 @@ function addCard() {
 
 function deleteCard() {
   if (cards.length === 0) return;
-  cards.splice(current, 1);   // buang 1 kartu di posisi current
+  cards.splice(current, 1);
   if (current >= cards.length) {
     current = 0;
   }
@@ -217,32 +219,47 @@ function deleteCard() {
   showCard();
 }
 
-// ---------- Langkah 11: sambungkan tombol ke fungsi ----------
-document.getElementById("summarizeBtn").onclick = summarize;
-document.getElementById("makeCardsBtn").onclick = makeCards;
-document.getElementById("flipBtn").onclick = flip;
-document.getElementById("nextBtn").onclick = next;
-document.getElementById("prevBtn").onclick = previous;
-document.getElementById("knownBtn").onclick = function () { mark(true); };
-document.getElementById("unknownBtn").onclick = function () { mark(false); };
-document.getElementById("addBtn").onclick = addCard;
-document.getElementById("deleteBtn").onclick = deleteCard;
-document.getElementById("resetBtn").onclick = resetProgress;
-cardBox.onclick = flip;
+// ---------- Langkah 11: sambungkan tombol ke fungsi utama (dengan pengaman) ----------
+var summarizeBtn = document.getElementById("summarizeBtn");
+if (summarizeBtn) summarizeBtn.onclick = summarize;
 
-// ---------- Langkah 12: jalankan saat halaman dibuka ----------
+var makeCardsBtn = document.getElementById("makeCardsBtn");
+if (makeCardsBtn) makeCardsBtn.onclick = makeCards;
+
+var flipBtn = document.getElementById("flipBtn");
+if (flipBtn) flipBtn.onclick = flip;
+
+var nextBtn = document.getElementById("nextBtn");
+if (nextBtn) nextBtn.onclick = next;
+
+var prevBtn = document.getElementById("prevBtn");
+if (prevBtn) prevBtn.onclick = previous;
+
+var knownBtn = document.getElementById("knownBtn");
+if (knownBtn) knownBtn.onclick = function () { mark(true); };
+
+var unknownBtn = document.getElementById("unknownBtn");
+if (unknownBtn) unknownBtn.onclick = function () { mark(false); };
+
+var addBtn = document.getElementById("addBtn");
+if (addBtn) addBtn.onclick = addCard;
+
+var deleteBtn = document.getElementById("deleteBtn");
+if (deleteBtn) deleteBtn.onclick = deleteCard;
+
+var resetBtn = document.getElementById("resetBtn");
+if (resetBtn) resetBtn.onclick = resetProgress;
+
+if (cardBox) cardBox.onclick = flip;
+
 load();
 showCard();
 
-
 // =====================================================
-//  FITUR BARU: LOG PROGRESS MINGGUAN
-//  Seperti tabel di spreadsheet: tiap minggu ada "Dikerjakan" dan "Kendala"
+// FITUR: LOG PROGRESS MINGGUAN
 // =====================================================
-
-// ---------- Langkah 13: data log ----------
-var logs = {};        // contoh: { "1": { done: "...", problem: "..." } }
-var totalWeeks = 8;   // jumlah baris minggu di tabel
+var logs = {};
+var totalWeeks = 8;
 
 var weekNo = document.getElementById("weekNo");
 var weekTotal = document.getElementById("weekTotal");
@@ -268,12 +285,10 @@ function loadLog() {
   }
 }
 
-// mengubah tanda < > & supaya teks aman ditampilkan di HTML
 function safeText(text) {
   return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-// ---------- Langkah 14: gambar tabel ----------
 function renderLog() {
   var html = "<tr><th>Minggu</th><th>Dikerjakan</th><th>Kendala</th><th></th></tr>";
   var filled = 0;
@@ -299,49 +314,53 @@ function renderLog() {
     }
   }
 
-  document.getElementById("logTable").innerHTML = html;
+  var logTableElem = document.getElementById("logTable");
+  if (logTableElem) logTableElem.innerHTML = html;
 
   var percent = Math.round((filled / totalWeeks) * 100);
-  document.getElementById("logText").textContent = filled + " dari " + totalWeeks + " minggu terisi";
-  document.getElementById("logPercent").textContent = percent + "%";
-  document.getElementById("logBar").style.width = percent + "%";
-  weekTotal.value = totalWeeks;
+  var logTextElem = document.getElementById("logText");
+  var logPercentElem = document.getElementById("logPercent");
+  var logBarElem = document.getElementById("logBar");
+
+  if (logTextElem) logTextElem.textContent = filled + " dari " + totalWeeks + " minggu terisi";
+  if (logPercentElem) logPercentElem.textContent = percent + "%";
+  if (logBarElem) logBarElem.style.width = percent + "%";
+  if (weekTotal) weekTotal.value = totalWeeks;
 }
 
-// ---------- Langkah 15: simpan, edit, hapus ----------
 function saveWeek() {
+  if (!weekNo || !logDone || !logProblem) return;
   var week = parseInt(weekNo.value);
   if (isNaN(week) || week < 1) return;
   if (logDone.value.trim() === "" && logProblem.value.trim() === "") return;
 
   if (week > totalWeeks) {
-    totalWeeks = week;   // tabel otomatis bertambah
+    totalWeeks = week;
   }
   logs[week] = { done: logDone.value.trim(), problem: logProblem.value.trim() };
 
   logDone.value = "";
   logProblem.value = "";
-  weekNo.value = week + 1;   // langsung siap isi minggu berikutnya
+  weekNo.value = week + 1;
   saveLog();
   renderLog();
 }
 
-function editWeek(week) {
+window.editWeek = function(week) {
+  if (!weekNo || !logDone || !logProblem) return;
   weekNo.value = week;
   var entry = logs[week];
   logDone.value = entry ? entry.done : "";
   logProblem.value = entry ? entry.problem : "";
   logDone.focus();
-}
+};
 
-function deleteWeek(week) {
+window.deleteWeek = function(week) {
   delete logs[week];
   saveLog();
   renderLog();
-}
+};
 
-// ---------- Langkah 16: salin untuk spreadsheet ----------
-// Hasilnya dipisah tab, jadi bisa langsung di-paste ke Google Sheets / Excel
 function copyLog() {
   var lines = ["Minggu\tDikerjakan\tKendala"];
   for (var w = 1; w <= totalWeeks; w++) {
@@ -353,38 +372,43 @@ function copyLog() {
 
   var button = document.getElementById("copyLogBtn");
   if (!navigator.clipboard) {
-    alert("Browser belum mengizinkan salin otomatis. Coba buka lewat Live Server.");
+    alert("Browser belum mengizinkan salin otomatis.");
     return;
   }
   navigator.clipboard.writeText(lines.join("\n")).then(function () {
-    button.textContent = "Tersalin!";
-    setTimeout(function () { button.textContent = "Salin untuk spreadsheet"; }, 1500);
+    if (button) {
+      button.textContent = "Tersalin!";
+      setTimeout(function () { button.textContent = "Salin untuk spreadsheet"; }, 1500);
+    }
   });
 }
 
-// ---------- Langkah 17: sambungkan tombol & jalankan ----------
-document.getElementById("saveWeekBtn").onclick = saveWeek;
-document.getElementById("copyLogBtn").onclick = copyLog;
-weekTotal.onchange = function () {
-  var n = parseInt(weekTotal.value);
-  if (isNaN(n) || n < 1) n = 1;
-  totalWeeks = n;
-  saveLog();
-  renderLog();
-};
+var saveWeekBtn = document.getElementById("saveWeekBtn");
+if (saveWeekBtn) saveWeekBtn.onclick = saveWeek;
+
+var copyLogBtn = document.getElementById("copyLogBtn");
+if (copyLogBtn) copyLogBtn.onclick = copyLog;
+
+if (weekTotal) {
+  weekTotal.onchange = function () {
+    var n = parseInt(weekTotal.value);
+    if (isNaN(n) || n < 1) n = 1;
+    totalWeeks = n;
+    saveLog();
+    renderLog();
+  };
+}
 
 loadLog();
 renderLog();
 
 
 // =====================================================
-//  FITUR BARU: MODE KUIS, HARI BELAJAR, MODE GELAP
+// FITUR: MODE KUIS & HARI BELAJAR
 // =====================================================
-
-// ---------- Langkah 18: mode kuis ----------
-var quizList = [];     // soal yang dipakai (kartu acak)
-var quizIndex = 0;     // soal ke berapa
-var quizScore = 0;     // jumlah jawaban benar
+var quizList = [];
+var quizIndex = 0;
+var quizScore = 0;
 
 var quizStart = document.getElementById("quizStart");
 var quizPlay = document.getElementById("quizPlay");
@@ -394,7 +418,6 @@ var quizFeedback = document.getElementById("quizFeedback");
 var checkBtn = document.getElementById("checkBtn");
 var nextQuizBtn = document.getElementById("nextQuizBtn");
 
-// mengacak urutan (supaya soal tidak selalu sama)
 function shuffle(list) {
   var copy = list.slice();
   for (var i = copy.length - 1; i > 0; i--) {
@@ -406,13 +429,10 @@ function shuffle(list) {
   return copy;
 }
 
-// memecah teks jadi kata-kata kecil
 function getWords(text) {
   return text.toLowerCase().match(/[a-z0-9]+/g) || [];
 }
 
-// Jawaban dianggap benar kalau minimal 60% kata kunci jawaban ada di ketikanmu.
-// Kata sambung (yang, atau, dan, ...) tidak dihitung.
 var SKIP_WORDS = ["yang", "atau", "dan", "dari", "untuk", "dengan", "pada", "adalah", "itu", "ini", "dalam", "the", "and", "for", "with", "that", "are", "was"];
 
 function isCorrect(typed, answer) {
@@ -435,54 +455,72 @@ function isCorrect(typed, answer) {
 function startQuiz() {
   var message = document.getElementById("quizMessage");
   if (cards.length === 0) {
-    message.textContent = "Belum ada kartu. Buat kartu dulu di bagian 2.";
+    if (message) message.textContent = "Belum ada kartu. Buat kartu dulu di bagian 2.";
     return;
   }
-  message.textContent = "";
+  if (message) message.textContent = "";
   quizList = shuffle(cards).slice(0, 10);
   quizIndex = 0;
   quizScore = 0;
-  quizStart.hidden = true;
-  quizEnd.hidden = true;
-  quizPlay.hidden = false;
+  if (quizStart) quizStart.hidden = true;
+  if (quizEnd) quizEnd.hidden = true;
+  if (quizPlay) quizPlay.hidden = false;
   showQuestion();
 }
 
 function showQuestion() {
-  document.getElementById("quizCount").textContent = "Soal " + (quizIndex + 1) + " dari " + quizList.length;
-  document.getElementById("quizScoreText").textContent = "Benar: " + quizScore;
-  document.getElementById("quizBar").style.width = Math.round((quizIndex / quizList.length) * 100) + "%";
-  document.getElementById("quizQuestion").textContent = quizList[quizIndex].question;
+  var quizCountElem = document.getElementById("quizCount");
+  var quizScoreElem = document.getElementById("quizScoreText");
+  var quizBarElem = document.getElementById("quizBar");
+  var quizQuesElem = document.getElementById("quizQuestion");
 
-  quizInput.value = "";
-  quizInput.disabled = false;
-  quizFeedback.textContent = "";
-  quizFeedback.className = "result";
-  checkBtn.hidden = false;
-  nextQuizBtn.hidden = true;
-  quizInput.focus();
+  if (quizCountElem) quizCountElem.textContent = "Soal " + (quizIndex + 1) + " dari " + quizList.length;
+  if (quizScoreElem) quizScoreElem.textContent = "Benar: " + quizScore;
+  if (quizBarElem) quizBarElem.style.width = Math.round((quizIndex / quizList.length) * 100) + "%";
+  if (quizQuesElem) quizQuesElem.textContent = quizList[quizIndex].question;
+
+  if (quizInput) {
+    quizInput.value = "";
+    quizInput.disabled = false;
+    quizInput.focus();
+  }
+  if (quizFeedback) {
+    quizFeedback.textContent = "";
+    quizFeedback.className = "result";
+  }
+  if (checkBtn) checkBtn.hidden = false;
+  if (nextQuizBtn) nextQuizBtn.hidden = true;
 }
 
 function checkAnswer() {
+  if (!quizInput) return;
   var typed = quizInput.value;
-  if (typed.trim() === "") return;   // belum mengetik apa-apa
+  if (typed.trim() === "") return;
 
   var card = quizList[quizIndex];
   if (isCorrect(typed, card.answer)) {
     quizScore = quizScore + 1;
-    quizFeedback.textContent = "Benar! Jawabannya: " + card.answer;
-    quizFeedback.className = "result good";
+    if (quizFeedback) {
+      quizFeedback.textContent = "Benar! Jawabannya: " + card.answer;
+      quizFeedback.className = "result good";
+    }
   } else {
-    quizFeedback.textContent = "Kurang tepat. Jawabannya: " + card.answer;
-    quizFeedback.className = "result bad";
+    if (quizFeedback) {
+      quizFeedback.textContent = "Kurang tepat. Jawabannya: " + card.answer;
+      quizFeedback.className = "result bad";
+    }
   }
 
-  recordStudy();   // menjawab soal dihitung sebagai belajar
-  document.getElementById("quizScoreText").textContent = "Benar: " + quizScore;
+  recordStudy();
+  var quizScoreElem = document.getElementById("quizScoreText");
+  if (quizScoreElem) quizScoreElem.textContent = "Benar: " + quizScore;
+  
   quizInput.disabled = true;
-  checkBtn.hidden = true;
-  nextQuizBtn.hidden = false;
-  nextQuizBtn.textContent = (quizIndex === quizList.length - 1) ? "Lihat hasil" : "Soal berikutnya";
+  if (checkBtn) checkBtn.hidden = true;
+  if (nextQuizBtn) {
+    nextQuizBtn.hidden = false;
+    nextQuizBtn.textContent = (quizIndex === quizList.length - 1) ? "Lihat hasil" : "Soal berikutnya";
+  }
 }
 
 function nextQuestion() {
@@ -503,36 +541,42 @@ function finishQuiz() {
     text = "Lumayan! Sedikit lagi.";
   }
 
-  quizPlay.hidden = true;
-  quizEnd.hidden = false;
-  document.getElementById("quizFinalScore").textContent = quizScore + " dari " + quizList.length + " (" + percent + "%)";
-  document.getElementById("quizFinalText").textContent = text;
+  if (quizPlay) quizPlay.hidden = true;
+  if (quizEnd) quizEnd.hidden = false;
+  var finalScoreElem = document.getElementById("quizFinalScore");
+  var finalTextElem = document.getElementById("quizFinalText");
+  if (finalScoreElem) finalScoreElem.textContent = quizScore + " dari " + quizList.length + " (" + percent + "%)";
+  if (finalTextElem) finalTextElem.textContent = text;
 }
 
-document.getElementById("startQuizBtn").onclick = startQuiz;
-document.getElementById("againQuizBtn").onclick = startQuiz;
-checkBtn.onclick = checkAnswer;
-nextQuizBtn.onclick = nextQuestion;
-quizInput.onkeydown = function (event) {
-  if (event.key === "Enter") {
-    if (!checkBtn.hidden) {
-      checkAnswer();
-    } else {
-      nextQuestion();
-    }
-  }
-};
+var startQuizBtn = document.getElementById("startQuizBtn");
+if (startQuizBtn) startQuizBtn.onclick = startQuiz;
 
-// ---------- Langkah 19: hitungan hari belajar ----------
-// Hari dihitung "belajar" kalau kamu menandai kartu (hafal / belum hafal)
-// atau menjawab soal kuis. Tanggal disimpan seperti "2026-10-10".
+var againQuizBtn = document.getElementById("againQuizBtn");
+if (againQuizBtn) againQuizBtn.onclick = startQuiz;
+
+if (checkBtn) checkBtn.onclick = checkAnswer;
+if (nextQuizBtn) nextQuizBtn.onclick = nextQuestion;
+
+if (quizInput) {
+  quizInput.onkeydown = function (event) {
+    if (event.key === "Enter") {
+      if (checkBtn && !checkBtn.hidden) {
+        checkAnswer();
+      } else {
+        nextQuestion();
+      }
+    }
+  };
+}
+
+// --- Hari Belajar ---
 var studyDays = [];
 
 function pad(n) {
   return n < 10 ? "0" + n : "" + n;
 }
 
-// offset 0 = hari ini, 1 = kemarin, 2 = dua hari lalu, dst.
 function dayString(offset) {
   var d = new Date();
   d.setDate(d.getDate() - offset);
@@ -563,77 +607,78 @@ function recordStudy() {
 
 function renderStreak() {
   var studiedToday = studyDays.indexOf(dayString(0)) !== -1;
-
-  // Kalau hari ini belum belajar, hitungan masih "hidup" dari kemarin.
   var start = studiedToday ? 0 : 1;
   var streak = 0;
   while (studyDays.indexOf(dayString(start + streak)) !== -1) {
     streak = streak + 1;
   }
 
-  document.getElementById("streakNum").textContent = streak;
-  document.getElementById("totalDays").textContent = studyDays.length;
-  document.getElementById("todayStatus").textContent = studiedToday ? "Sudah" : "Belum";
+  var streakNum = document.getElementById("streakNum");
+  var totalDays = document.getElementById("totalDays");
+  var todayStatus = document.getElementById("todayStatus");
+
+  if (streakNum) streakNum.textContent = streak;
+  if (totalDays) totalDays.textContent = studyDays.length;
+  if (todayStatus) todayStatus.textContent = studiedToday ? "Sudah" : "Belum";
 }
-
-// ---------- Langkah 20: mode gelap ----------
-var themeBtn = document.getElementById("themeBtn");
-
-function applyTheme(theme) {
-  document.documentElement.setAttribute("data-theme", theme);
-  themeBtn.textContent = (theme === "dark") ? "Mode terang" : "Mode gelap";
-  try {
-    localStorage.setItem("studydesk-theme", theme);
-  } catch (e) {}
-}
-
-themeBtn.onclick = function () {
-  var isDark = document.documentElement.getAttribute("data-theme") === "dark";
-  applyTheme(isDark ? "light" : "dark");
-};
-
-// ---------- Langkah 21: jalankan saat halaman dibuka ----------
-var savedTheme = "light";
-try {
-  savedTheme = localStorage.getItem("studydesk-theme") || "light";
-} catch (e) {}
-applyTheme(savedTheme);
 
 loadDays();
 renderStreak();
 
 
 // =====================================================
-//  FITUR BARU: UNGGAH FILE MATERI
-//  Mendukung: .txt .md .pdf .docx .pptx
+// FITUR: MODE GELAP
 // =====================================================
+var themeBtn = document.getElementById("themeBtn");
 
-// ---------- Langkah 22: pengaturan & elemen ----------
-var MAX_TEXT_SIZE = 1000000;    // file teks: maksimal 1 MB
-var MAX_FILE_SIZE = 50000000;   // PDF / Word / PowerPoint: maksimal 50 MB (PPT berisi gambar biasanya besar)
-var MAX_PAGES = 100;            // PDF: baca 100 halaman pertama saja
+function applyTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  if (themeBtn) {
+    themeBtn.textContent = (theme === "dark") ? "Mode terang" : "Mode gelap";
+  }
+  try {
+    localStorage.setItem("studydesk-theme", theme);
+  } catch (e) {}
+}
+
+if (themeBtn) {
+  themeBtn.onclick = function () {
+    var isDark = document.documentElement.getAttribute("data-theme") === "dark";
+    applyTheme(isDark ? "light" : "dark");
+  };
+}
+
+var savedTheme = "light";
+try {
+  savedTheme = localStorage.getItem("studydesk-theme") || "light";
+} catch (e) {}
+applyTheme(savedTheme);
+
+
+// =====================================================
+// FITUR: UNGGAH FILE MATERI
+// =====================================================
+var MAX_TEXT_SIZE = 1000000; 
+var MAX_FILE_SIZE = 50000000; 
+var MAX_PAGES = 100;
 var PDF_WORKER_URL = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
 var fileInput = document.getElementById("fileInput");
 var fileName = document.getElementById("fileName");
 
 function setStatus(message) {
+  if (!fileName) return;
   fileName.textContent = message;
-  // pesan masalah diberi warna merah supaya mudah terlihat
   var isProblem = /^(Gagal|Format|File terlalu|Tidak ada)/.test(message);
   fileName.className = isProblem ? "file-name error" : "file-name";
 }
 
-// JSZip dipakai untuk .docx dan .pptx. Cek dulu apakah sudah termuat.
 function needJSZip() {
   if (typeof JSZip === "undefined") {
-    throw new Error("library JSZip belum termuat. Pastikan terhubung ke internet lalu refresh halaman (Ctrl+Shift+R).");
+    throw new Error("Library JSZip belum termuat.");
   }
 }
 
-// ---------- Langkah 23: alat bantu membersihkan teks ----------
-// Ringkasan & flashcard bekerja per kalimat (diakhiri titik).
-// Poin-poin di slide biasanya tidak ada titiknya, jadi kita tambahkan.
 function addPeriods(lines) {
   return lines
     .map(function (line) { return line.trim(); })
@@ -645,8 +690,6 @@ function addPeriods(lines) {
     .join("\n");
 }
 
-// File Word & PowerPoint menyimpan teks dalam XML. Beberapa tanda XML
-// ditulis dengan kode (misalnya &amp;), kita kembalikan ke bentuk aslinya.
 function decodeXml(text) {
   return text
     .replace(/&lt;/g, "<")
@@ -656,9 +699,6 @@ function decodeXml(text) {
     .replace(/&amp;/g, "&");
 }
 
-// ---------- Langkah 24: membaca Word (.docx) ----------
-// .docx sebenarnya file ZIP. Teksnya ada di word/document.xml.
-// Satu paragraf diakhiri </w:p>, jadi kita ganti jadi baris baru lalu buang semua tag.
 async function readDocx(file) {
   needJSZip();
   var zip = await JSZip.loadAsync(await file.arrayBuffer());
@@ -671,10 +711,9 @@ async function readDocx(file) {
   return addPeriods(decodeXml(xml).split("\n"));
 }
 
-// ---------- Langkah 25: membaca PowerPoint (.pptx) ----------
-// .pptx juga ZIP. Tiap slide ada di ppt/slides/slideN.xml, paragrafnya diakhiri </a:p>.
 function slideNumber(name) {
-  return parseInt(name.match(/(\d+)\.xml$/)[1]);
+  var match = name.match(/(\d+)\.xml$/);
+  return match ? parseInt(match[1]) : 0;
 }
 
 async function readPptx(file) {
@@ -686,7 +725,7 @@ async function readPptx(file) {
   });
   slideNames.sort(function (a, b) { return slideNumber(a) - slideNumber(b); });
   if (slideNames.length === 0) {
-    throw new Error("tidak ada slide di file ini. Pastikan ini file .pptx asli (bukan hasil ganti nama).");
+    throw new Error("Tidak ada slide di file ini.");
   }
 
   var lines = [];
@@ -701,12 +740,9 @@ async function readPptx(file) {
   return addPeriods(lines);
 }
 
-// ---------- Langkah 26: membaca PDF ----------
-// Library pdf.js memberi potongan-potongan teks beserta posisinya.
-// Potongan yang posisi vertikalnya (y) sama kita gabung jadi satu baris.
 async function readPdf(file) {
   if (typeof pdfjsLib === "undefined") {
-    throw new Error("library PDF belum termuat. Pastikan terhubung ke internet lalu refresh halaman.");
+    throw new Error("Library PDF belum termuat.");
   }
   pdfjsLib.GlobalWorkerOptions.workerSrc = PDF_WORKER_URL;
 
@@ -731,16 +767,9 @@ async function readPdf(file) {
     });
     lines.push(line);
   }
-
-  if (pdf.numPages > MAX_PAGES) {
-    setStatus("PDF punya " + pdf.numPages + " halaman, hanya " + MAX_PAGES + " halaman pertama yang dibaca.");
-  }
   return addPeriods(joinWrappedLines(lines));
 }
 
-// Di PDF, satu kalimat sering terpotong ke baris berikutnya.
-// Aturan sederhana: kalau baris sebelumnya belum selesai (tanpa titik)
-// dan baris ini diawali huruf kecil, anggap itu lanjutan kalimat.
 function joinWrappedLines(lines) {
   var paragraphs = [];
   lines.forEach(function (raw) {
@@ -761,54 +790,55 @@ function joinWrappedLines(lines) {
   return paragraphs;
 }
 
-// ---------- Langkah 27: saat file dipilih ----------
-fileInput.onchange = async function () {
-  var file = fileInput.files[0];
-  if (!file) return;
+if (fileInput) {
+  fileInput.onchange = async function () {
+    var file = fileInput.files[0];
+    if (!file) return;
 
-  var name = file.name.toLowerCase();
-  var ext = name.slice(name.lastIndexOf(".") + 1);
-  var isText = ["txt", "md", "markdown", "csv"].indexOf(ext) !== -1;
-  var isOffice = ["pdf", "docx", "pptx"].indexOf(ext) !== -1;
+    var name = file.name.toLowerCase();
+    var ext = name.slice(name.lastIndexOf(".") + 1);
+    var isText = ["txt", "md", "markdown", "csv"].indexOf(ext) !== -1;
+    var isOffice = ["pdf", "docx", "pptx"].indexOf(ext) !== -1;
 
-  if (ext === "doc" || ext === "ppt") {
-    setStatus("Format lama (.doc / .ppt) belum didukung. Simpan ulang sebagai .docx / .pptx.");
-    fileInput.value = "";
-    return;
-  }
-  if (!isText && !isOffice) {
-    setStatus("Format belum didukung. Pakai .txt, .md, .pdf, .docx, atau .pptx.");
-    fileInput.value = "";
-    return;
-  }
-  if (file.size > (isText ? MAX_TEXT_SIZE : MAX_FILE_SIZE)) {
-    setStatus("File terlalu besar (maksimal " + (isText ? "1" : "50") + " MB).");
-    fileInput.value = "";
-    return;
-  }
-
-  setStatus("Membaca " + file.name + "...");
-  try {
-    var text;
-    if (isText) {
-      text = await file.text();
-    } else if (ext === "pdf") {
-      text = await readPdf(file);
-    } else if (ext === "docx") {
-      text = await readDocx(file);
-    } else {
-      text = await readPptx(file);
+    if (ext === "doc" || ext === "ppt") {
+      setStatus("Format lama (.doc / .ppt) belum didukung.");
+      fileInput.value = "";
+      return;
+    }
+    if (!isText && !isOffice) {
+      setStatus("Format belum didukung.");
+      fileInput.value = "";
+      return;
+    }
+    if (file.size > (isText ? MAX_TEXT_SIZE : MAX_FILE_SIZE)) {
+      setStatus("File terlalu besar.");
+      fileInput.value = "";
+      return;
     }
 
-    if (text.trim() === "") {
-      setStatus("Tidak ada teks yang bisa dibaca di file ini (kalau PDF, mungkin hasil scan berupa gambar).");
-    } else {
-      notesBox.value = text;          // isi kotak catatan
-      summaryText.textContent = "";   // bersihkan hasil lama
-      setStatus(file.name + " berhasil dimuat. Klik Ringkas atau Buat flashcard.");
+    setStatus("Membaca " + file.name + "...");
+    try {
+      var text;
+      if (isText) {
+        text = await file.text();
+      } else if (ext === "pdf") {
+        text = await readPdf(file);
+      } else if (ext === "docx") {
+        text = await readDocx(file);
+      } else {
+        text = await readPptx(file);
+      }
+
+      if (!text || text.trim() === "") {
+        setStatus("Tidak ada teks yang bisa dibaca.");
+      } else {
+        if (notesBox) notesBox.value = text;
+        if (summaryText) summaryText.textContent = "";
+        setStatus(file.name + " berhasil dimuat!");
+      }
+    } catch (e) {
+      setStatus("Gagal membaca file: " + e.message);
     }
-  } catch (e) {
-    setStatus("Gagal membaca file: " + e.message);
-  }
-  fileInput.value = "";   // supaya file yang sama bisa dipilih lagi nanti
-};
+    fileInput.value = "";
+  };
+}
