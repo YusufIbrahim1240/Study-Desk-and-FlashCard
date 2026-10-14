@@ -796,33 +796,19 @@ fileInput.onchange = async function () {
       text = await readPdf(file);
     } else if (ext === "docx") {
       text = await readDocx(file);
-    } else if (ext === "pptx") {
+    } else {
       text = await readPptx(file);
     }
 
-    if (!text.trim()) {
-      setStatus("Tidak ada teks yang dapat dibaca.");
-      return;
+    if (text.trim() === "") {
+      setStatus("Tidak ada teks yang bisa dibaca di file ini (kalau PDF, mungkin hasil scan berupa gambar).");
+    } else {
+      notesBox.value = text;          // isi kotak catatan
+      summaryText.textContent = "";   // bersihkan hasil lama
+      setStatus(file.name + " berhasil dimuat. Klik Ringkas atau Buat flashcard.");
     }
-
-    notesBox.value = text;
-    summaryText.textContent = "";
-
-    setStatus(
-      file.name + " berhasil dimuat! " +
-      "Sekarang kamu bisa membuat ringkasan."
-    );
-  } catch (error) {
-    console.error(error);
-    setStatus("Terjadi kesalahan saat membaca file.");
-    fileInput.value = "";
+  } catch (e) {
+    setStatus("Gagal membaca file: " + e.message);
   }
+  fileInput.value = "";   // supaya file yang sama bisa dipilih lagi nanti
 };
-
-// Pindahkan ke luar agar bisa dipanggil oleh tombol reset di HTML-mu (misal: tombol "Hapus/Reset")
-function resetInitialNotes() {
-  notesBox.value = "";
-  summaryText.textContent = "";
-  fileInput.value = ""; // Jangan lupa reset input file juga agar bisa pilih file yang sama lagi
-  setStatus("Belum ada materi. Silahkan ketik atau unggah file.");
-}
