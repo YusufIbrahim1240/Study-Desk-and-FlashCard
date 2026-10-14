@@ -219,7 +219,7 @@ function deleteCard() {
   showCard();
 }
 
-// ---------- Langkah 11: sambungkan tombol ke fungsi utama (dengan pengaman) ----------
+// ---------- Langkah 11: sambungkan tombol ke fungsi utama ----------
 var summarizeBtn = document.getElementById("summarizeBtn");
 if (summarizeBtn) summarizeBtn.onclick = summarize;
 
@@ -254,6 +254,7 @@ if (cardBox) cardBox.onclick = flip;
 
 load();
 showCard();
+
 
 // =====================================================
 // FITUR: LOG PROGRESS MINGGUAN
@@ -290,6 +291,9 @@ function safeText(text) {
 }
 
 function renderLog() {
+  var tableElem = document.getElementById("logTable");
+  if (!tableElem) return; // Pengaman agar tidak error jika tabel belum ada
+
   var html = "<tr><th>Minggu</th><th>Dikerjakan</th><th>Kendala</th><th></th></tr>";
   var filled = 0;
 
@@ -314,8 +318,7 @@ function renderLog() {
     }
   }
 
-  var logTableElem = document.getElementById("logTable");
-  if (logTableElem) logTableElem.innerHTML = html;
+  tableElem.innerHTML = html;
 
   var percent = Math.round((filled / totalWeeks) * 100);
   var logTextElem = document.getElementById("logText");
@@ -332,16 +335,16 @@ function saveWeek() {
   if (!weekNo || !logDone || !logProblem) return;
   var week = parseInt(weekNo.value);
   if (isNaN(week) || week < 1) return;
-  if (logDone.value.trim() === "" && logProblem.value.trim() === "") return;
 
-  if (week > totalWeeks) {
-    totalWeeks = week;
-  }
-  logs[week] = { done: logDone.value.trim(), problem: logProblem.value.trim() };
+  // Tetap simpan meskipun salah satu kolom dikosongkan
+  logs[week] = { 
+    done: logDone.value.trim() || "-", 
+    problem: logProblem.value.trim() || "-" 
+  };
 
   logDone.value = "";
   logProblem.value = "";
-  weekNo.value = week + 1;
+  weekNo.value = week + 1;  // otomatis lanjut ke minggu berikutnya
   saveLog();
   renderLog();
 }
