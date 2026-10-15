@@ -1,739 +1,154 @@
-/* Font elegan dari Google Fonts (butuh internet, kalau offline otomatis pakai font cadangan) */
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600&display=swap");
 
-/* ---------- Warna & ukuran: ganti di sini saja ---------- */
 :root {
-  --bg-1: #f8f7f3;          /* latar atas (gading) */
-  --bg-2: #ece9df;          /* latar bawah */
-  --box: rgba(255, 255, 255, 0.88);
-  --text: #2b2f2c;
-  --muted: #85897f;
-  --line: #e6e3d8;
-  --accent: #2f6b57;        /* hijau zamrud */
-  --accent-2: #4f8f78;      /* hijau sage */
-  --accent-soft: #e6efe9;
-  --gold: #c9a45c;          /* aksen emas tipis */
-  --radius: 20px;
-  --shadow: 0 10px 30px rgba(40, 60, 50, 0.10);
-  --shadow-strong: 0 16px 40px rgba(40, 60, 50, 0.16);
-  --glow: 0 6px 16px rgba(47, 107, 87, 0.30);         /* bayangan tombol */
-  --glow-strong: 0 10px 22px rgba(47, 107, 87, 0.38); /* saat disentuh kursor */
-  --field: #fdfdfb;         /* warna dalam kolom isian */
-  --card-bg: #ffffff;       /* warna kartu */
-  --filled: #fbf3df;        /* sel tabel yang sudah terisi */
-  --empty-bg: #f8e4e4;      /* sel tabel yang belum diisi */
-  --empty-text: #b08a8a;
-  --on-accent: #ffffff;     /* tulisan di atas warna hijau */
+  --bg-1: #f8f7f3; --bg-2: #ece9df; --box: rgba(255,255,255,0.88);
+  --text: #2b2f2c; --muted: #85897f; --line: #e6e3d8;
+  --accent: #2f6b57; --accent-2: #4f8f78; --accent-soft: #e6efe9;
+  --gold: #c9a45c; --radius: 20px; --field: #fdfdfb; --card-bg: #fff;
+  --filled: #fbf3df; --empty-bg: #f8e4e4; --empty-text: #b08a8a; --on-accent: #fff;
+  --shadow: 0 10px 30px rgba(40,60,50,0.10); --glow: 0 6px 16px rgba(47,107,87,0.30);
 }
 
-/* ---------- MODE GELAP ----------
-   Dipakai saat <html> punya data-theme="dark" (diatur oleh tombol di halaman) */
 :root[data-theme="dark"] {
-  --bg-1: #101a16;
-  --bg-2: #16231d;
-  --box: rgba(27, 42, 35, 0.88);
-  --text: #e5eee9;
-  --muted: #94a89d;
-  --line: #2c4036;
-  --accent: #5fb596;
-  --accent-2: #86d1b5;
-  --accent-soft: #213a2f;
-  --gold: #d6b46f;
-  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-  --shadow-strong: 0 16px 40px rgba(0, 0, 0, 0.5);
-  --glow: 0 6px 16px rgba(95, 181, 150, 0.25);
-  --glow-strong: 0 10px 22px rgba(95, 181, 150, 0.35);
-  --field: #14211b;
-  --card-bg: #1b2a23;
-  --filled: #2f2c1c;
-  --empty-bg: #3a2428;
-  --empty-text: #c99a9f;
-  --on-accent: #0f1a16;
+  --bg-1: #101a16; --bg-2: #16231d; --box: rgba(27,42,35,0.88);
+  --text: #e5eee9; --muted: #94a89d; --line: #2c4036;
+  --accent: #5fb596; --accent-2: #86d1b5; --accent-soft: #213a2f;
+  --gold: #d6b46f; --field: #14211b; --card-bg: #1b2a23;
+  --filled: #2f2c1c; --empty-bg: #3a2428; --empty-text: #c99a9f; --on-accent: #0f1a16;
+  --shadow: 0 10px 30px rgba(0,0,0,0.35); --glow: 0 6px 16px rgba(95,181,150,0.25);
 }
 
-/* ---------- Dasar halaman ---------- */
-* {
-  box-sizing: border-box;
-}
-
+* { box-sizing: border-box; }
 body {
-  margin: 0;
-  min-height: 100vh;
-  color: var(--text);
-  font-family: "Poppins", "Segoe UI", system-ui, sans-serif;
-  line-height: 1.7;
-  background: linear-gradient(160deg, var(--bg-1), var(--bg-2));
-  background-attachment: fixed;
+  margin: 0; min-height: 100vh; color: var(--text);
+  font-family: "Poppins", sans-serif; line-height: 1.7;
+  background: linear-gradient(160deg, var(--bg-1), var(--bg-2)); background-attachment: fixed;
 }
 
-::selection {
-  background: var(--accent-soft);
-}
-
-.page {
-  max-width: 680px;
-  margin: 0 auto;
-  padding: 48px 18px 64px;
-}
-
-/* ---------- Judul ---------- */
-header {
-  text-align: center;
-  margin-bottom: 36px;
-}
-
+.page { max-width: 680px; margin: 0 auto; padding: 48px 18px 64px; }
+header { text-align: center; margin-bottom: 36px; }
 h1 {
-  margin: 0;
-  font-family: "Playfair Display", Georgia, serif;
-  font-size: 2.8rem;
-  letter-spacing: 0.5px;
+  margin: 0; font-family: "Playfair Display", serif; font-size: 2.8rem;
   background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
 }
+h1::after { content: ""; display: block; width: 56px; height: 3px; margin: 10px auto 0; background: var(--gold); border-radius: 3px; }
+header p { margin: 12px 0 0; color: var(--muted); font-size: 0.95rem; }
+h2 { margin: 0 0 16px; font-family: "Playfair Display", serif; font-size: 1.35rem; }
+h3 { margin: 28px 0 10px; font-size: 0.8rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
 
-/* garis emas kecil di bawah judul */
-h1::after {
-  content: "";
-  display: block;
-  width: 56px;
-  height: 3px;
-  margin: 10px auto 0;
-  border-radius: 3px;
-  background: var(--gold);
-}
-
-header p {
-  margin: 12px 0 0;
-  color: var(--muted);
-  font-size: 0.95rem;
-}
-
-h2 {
-  margin: 0 0 16px;
-  font-family: "Playfair Display", Georgia, serif;
-  font-size: 1.35rem;
-}
-
-h3 {
-  margin: 28px 0 10px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-/* ---------- Kotak (section) ---------- */
 .box {
-  margin-bottom: 24px;
-  padding: 28px;
-  background: var(--box);
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(8px);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  margin-bottom: 24px; padding: 28px; background: var(--box);
+  border: 1px solid rgba(255,255,255,0.9); border-radius: var(--radius);
+  box-shadow: var(--shadow); backdrop-filter: blur(8px);
 }
 
-.box:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-strong);
+textarea, input {
+  width: 100%; padding: 14px 16px; font-family: inherit; font-size: 0.95rem;
+  color: var(--text); background: var(--field); border: 1.5px solid var(--line);
+  border-radius: 14px; transition: border-color 0.2s, box-shadow 0.2s;
 }
+textarea { height: 150px; resize: vertical; }
+input { margin-bottom: 10px; }
+textarea:focus, input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
 
-/* ---------- Kolom isian ---------- */
-textarea,
-input {
-  width: 100%;
-  padding: 14px 16px;
-  font-family: inherit;
-  font-size: 0.95rem;
-  color: var(--text);
-  background: var(--field);
-  border: 1.5px solid var(--line);
-  border-radius: 14px;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-textarea {
-  height: 150px;
-  resize: vertical;
-}
-
-input {
-  margin-bottom: 10px;
-}
-
-textarea::placeholder,
-input::placeholder {
-  color: #b3b6ab;
-}
-
-textarea:focus,
-input:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 4px var(--accent-soft);
-}
-
-/* ---------- Tombol ---------- */
-.buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.center {
-  justify-content: center;
-}
+.buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.center { justify-content: center; }
 
 button {
-  padding: 11px 22px;
-  font-family: inherit;
-  font-size: 0.92rem;
-  font-weight: 500;
-  color: var(--on-accent);
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  border: none;
-  border-radius: 999px;
-  cursor: pointer;
-  box-shadow: var(--glow);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-button:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--glow-strong);
-}
-
-button:active {
-  transform: translateY(0);
-}
-
-button:focus-visible {
-  outline: 3px solid var(--accent-soft);
-  outline-offset: 2px;
-}
-
-/* tombol pendukung: lebih tenang */
-button.soft {
-  color: var(--accent);
-  background: var(--accent-soft);
-  box-shadow: none;
-}
-
-button.soft:hover {
-  box-shadow: var(--shadow);
-}
-
-/* ---------- Hasil ringkasan ---------- */
-.result {
-  margin: 20px 0 0;
-  padding: 16px 18px;
-  background: var(--accent-soft);
-  border-left: 4px solid var(--gold);
-  border-radius: 12px;
-  font-size: 0.95rem;
-}
-
-/* sembunyikan kotak hasil kalau masih kosong */
-.result:empty {
-  display: none;
-}
-
-.hint {
-  margin: 12px 0 0;
-  text-align: center;
-  font-size: 0.82rem;
-  color: var(--muted);
-}
-
-/* ---------- Kartu flashcard ---------- */
-#card {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 190px;
-  padding: 28px;
-  text-align: center;
-  font-family: "Playfair Display", Georgia, serif;
-  font-size: 1.35rem;
-  line-height: 1.5;
-  color: var(--text);
-  background: var(--card-bg);
-  border: 1.5px solid var(--line);
-  border-top: 4px solid var(--gold);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  cursor: pointer;
-  user-select: none;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-#card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-strong);
-}
-
-/* kartu saat menampilkan jawaban */
-#card.answer {
-  color: var(--on-accent);
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  border-color: transparent;
-  border-top-color: var(--gold);
-  animation: pop 0.35s ease;
-}
-
-@keyframes pop {
-  from {
-    opacity: 0.4;
-    transform: scale(0.96) rotateX(25deg);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) rotateX(0);
-  }
-}
-
-/* ---------- Layar HP ---------- */
-@media (max-width: 480px) {
-  h1 {
-    font-size: 2.2rem;
-  }
-
-  .box {
-    padding: 20px;
-  }
-
-  button {
-    flex: 1 1 auto;
-  }
-}
-
-/* ---------- Progress belajar ---------- */
-.progress-info {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 6px;
-  font-size: 0.85rem;
-  color: var(--muted);
-}
-
-.progress {
-  height: 10px;
-  margin-bottom: 18px;
-  overflow: hidden;
-  background: var(--accent-soft);
-  border-radius: 999px;
-}
-
-#progressBar {
-  width: 0%;
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  border-radius: 999px;
-  transition: width 0.5s ease;
-}
-
-/* label kecil "Hafal" di pojok kartu yang sudah dihafal */
-#card {
-  position: relative;
-}
-
-#card.known::after {
-  content: "Hafal";
-  position: absolute;
-  top: 12px;
-  right: 14px;
-  padding: 2px 10px;
-  font-family: "Poppins", sans-serif;
-  font-size: 0.7rem;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--accent);
-  background: var(--accent-soft);
-  border-radius: 999px;
-}
-
-#card.answer.known::after {
-  color: var(--accent);
-  background: var(--card-bg);
-}
-
-.divider {
-  margin: 28px 0 0;
-  border: none;
-  border-top: 1px solid var(--line);
-}
-
-/* ---------- Log progress mingguan ---------- */
-#logBar {
-  width: 0%;
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  border-radius: 999px;
-  transition: width 0.5s ease;
-}
-
-label {
-  display: block;
-  margin: 14px 0 6px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--muted);
-}
-
-.two-cols {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.two-cols input {
-  margin-bottom: 0;
-}
-
-textarea.small {
-  height: 90px;
-}
-
-.table-wrap {
-  margin-top: 22px;
-  overflow-x: auto;     /* bisa digeser di layar HP */
-}
-
-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 6px;
-  font-size: 0.88rem;
-}
-
-th {
-  padding: 4px 10px;
-  text-align: left;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-td {
-  padding: 10px;
-  vertical-align: top;
-  white-space: pre-wrap;   /* enter di catatan tetap terbaca */
-}
-
-td:first-child {
-  border-radius: 10px 0 0 10px;
-}
-
-td:last-child {
-  border-radius: 0 10px 10px 0;
-  white-space: nowrap;
-}
-
-.wk {
-  width: 60px;
-  font-weight: 600;
-  text-align: center;
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-
-.filled {
-  background: var(--filled);     /* krem, seperti sel yang sudah terisi */
-}
-
-.empty {
-  background: var(--empty-bg);     /* merah muda lembut, tanda belum diisi */
-  color: var(--empty-text);
-  font-style: italic;
-}
-
-.tiny {
-  padding: 4px 12px;
-  font-size: 0.75rem;
-}
-
-
-/* ---------- Tombol mode gelap ---------- */
-.theme-btn {
-  margin-top: 14px;
-  padding: 6px 16px;
-  font-size: 0.8rem;
-}
-
-/* ---------- Hitungan hari belajar ---------- */
-.stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.stat {
-  padding: 14px 8px;
-  text-align: center;
-  background: var(--box);
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-}
-
-.stat strong {
-  display: block;
-  font-family: "Playfair Display", Georgia, serif;
-  font-size: 1.7rem;
-  line-height: 1.2;
-  color: var(--accent);
-}
-
-.stat span {
-  font-size: 0.75rem;
-  color: var(--muted);
-}
-
-/* ---------- Mode kuis ---------- */
-#quizBar {
-  width: 0%;
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  border-radius: 999px;
-  transition: width 0.5s ease;
-}
-
-.quiz-q {
-  margin-bottom: 14px;
-  padding: 22px;
-  text-align: center;
-  font-family: "Playfair Display", Georgia, serif;
-  font-size: 1.25rem;
-  line-height: 1.5;
-  background: var(--card-bg);
-  border: 1.5px solid var(--line);
-  border-top: 4px solid var(--gold);
-  border-radius: var(--radius);
-}
-
-.result.good {
-  border-left-color: var(--accent);
-}
-
-.result.bad {
-  border-left-color: #c9776f;
-}
-
-.score {
-  text-align: center;
-  font-family: "Playfair Display", Georgia, serif;
-  font-size: 2.2rem;
-  color: var(--accent);
-  margin: 6px 0;
-}
-
-.quiz-note {
-  margin: 0 0 14px;
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-/* hidden = disembunyikan, pastikan benar-benar hilang */
-[hidden] {
-  display: none !important;
-}
-
-
-/* ---------- Unggah file materi ---------- */
-.upload-row {
-  position: relative;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px 12px;
-  margin-bottom: 12px;
-}
-
-/* input file asli disembunyikan, yang tampil tombol "Unggah file" */
-.sr-only {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  padding: 0 !important;
-  margin: -1px !important;
-  border: 0 !important;
-  overflow: hidden;
-  opacity: 0;
-}
-
-.file-btn {
-  display: inline-block;
-  margin: 0;
-  padding: 8px 18px;
-  font-size: 0.88rem;
-  font-weight: 500;
-  color: var(--accent);
-  background: var(--accent-soft);
-  border-radius: 999px;
-  cursor: pointer;
+  padding: 11px 22px; font-family: inherit; font-size: 0.92rem; font-weight: 500;
+  color: var(--on-accent); background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  border: none; border-radius: 999px; cursor: pointer; box-shadow: var(--glow);
   transition: transform 0.2s ease;
 }
+button:hover { transform: translateY(-2px); }
+button.soft { color: var(--accent); background: var(--accent-soft); box-shadow: none; }
 
-.file-btn:hover {
-  transform: translateY(-2px);
+.result { margin: 20px 0 0; padding: 16px 18px; background: var(--accent-soft); border-left: 4px solid var(--gold); border-radius: 12px; font-size: 0.95rem; }
+.result:empty { display: none; }
+.hint { margin: 12px 0 0; text-align: center; font-size: 0.82rem; color: var(--muted); }
+
+#card, .quiz-q {
+  display: flex; align-items: center; justify-content: center; min-height: 190px;
+  padding: 28px; text-align: center; font-family: "Playfair Display", serif;
+  font-size: 1.35rem; color: var(--text); background: var(--card-bg);
+  border: 1.5px solid var(--line); border-top: 4px solid var(--gold);
+  border-radius: var(--radius); box-shadow: var(--shadow); cursor: pointer; user-select: none;
+  position: relative;
+}
+#card.answer { color: var(--on-accent); background: linear-gradient(135deg, var(--accent), var(--accent-2)); border-color: transparent; border-top-color: var(--gold); }
+#card.known::after {
+  content: "Hafal"; position: absolute; top: 12px; right: 14px; padding: 2px 10px;
+  font-family: "Poppins", sans-serif; font-size: 0.7rem; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--accent); background: var(--accent-soft); border-radius: 999px;
 }
 
-.file-name.error {
-  color: #c9776f;
-  font-weight: 500;
-}
+.progress-info { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.85rem; color: var(--muted); }
+.progress { height: 10px; margin-bottom: 18px; overflow: hidden; background: var(--accent-soft); border-radius: 999px; }
+#progressBar, #quizBar, #logBar { width: 0%; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); border-radius: 999px; transition: width 0.5s ease; }
 
-#fileInput:focus-visible + .file-btn {
-  outline: 3px solid var(--accent);
-  outline-offset: 2px;
-}
+label { display: block; margin: 14px 0 6px; font-size: 0.85rem; font-weight: 500; color: var(--muted); }
+.two-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.two-cols input { margin-bottom: 0; }
+textarea.small { height: 90px; }
 
-.file-name {
-  font-size: 0.82rem;
-  color: var(--muted);
-}
+.table-wrap { margin-top: 22px; overflow-x: auto; }
+table { width: 100%; border-collapse: separate; border-spacing: 0 6px; font-size: 0.88rem; }
+th { padding: 4px 10px; text-align: left; font-size: 0.75rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+td { padding: 10px; vertical-align: top; white-space: pre-wrap; }
+td:first-child { border-radius: 10px 0 0 10px; }
+td:last-child { border-radius: 0 10px 10px 0; white-space: nowrap; }
+.wk { width: 60px; font-weight: 600; text-align: center; background: var(--accent-soft); color: var(--accent); }
+.filled { background: var(--filled); }
+.empty { background: var(--empty-bg); color: var(--empty-text); font-style: italic; }
+.tiny { padding: 4px 12px; font-size: 0.75rem; }
 
-/* =====================================================
-   TATA LETAK LANDSCAPE (layar lebar)
-   ===================================================== */
+.theme-btn { margin-top: 14px; padding: 6px 16px; font-size: 0.8rem; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+.stat { padding: 14px 8px; text-align: center; background: var(--box); border-radius: 16px; box-shadow: var(--shadow); }
+.stat strong { display: block; font-family: "Playfair Display", serif; font-size: 1.7rem; color: var(--accent); }
+.stat span { font-size: 0.75rem; color: var(--muted); }
 
-/* Layar sedang (tablet / jendela agak sempit): 2 kolom, halaman boleh di-scroll */
+.score { text-align: center; font-family: "Playfair Display", serif; font-size: 2.2rem; color: var(--accent); margin: 6px 0; }
+.quiz-note { margin: 0 0 14px; color: var(--muted); font-size: 0.9rem; }
+[hidden] { display: none !important; }
+
+.upload-row { position: relative; display: flex; align-items: center; gap: 8px 12px; margin-bottom: 12px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
+.file-btn { display: inline-block; padding: 8px 18px; font-size: 0.88rem; font-weight: 500; color: var(--accent); background: var(--accent-soft); border-radius: 999px; cursor: pointer; }
+.file-name { font-size: 0.82rem; color: var(--muted); }
+.file-name.error { color: #c9776f; font-weight: 500; }
+.divider { margin: 28px 0 0; border: none; border-top: 1px solid var(--line); }
+
 @media (min-width: 700px) {
-  .page {
-    max-width: 1000px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-    align-items: start;
-  }
-
-  header,
-  .stats {
-    grid-column: 1 / -1;
-    margin-bottom: 0;
-  }
-
-  .box {
-    margin-bottom: 0;
-  }
-
-  .cards-box,
-  .log-box {
-    grid-column: 1 / -1;   /* kotak yang lebar dibuat selebar halaman */
-  }
+  .page { max-width: 1000px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  header, .stats, .cards-box, .log-box { grid-column: 1 / -1; }
+  .box { margin-bottom: 0; }
 }
 
-/* Layar lebar seperti laptop / monitor: 3 kolom, semua muat dalam satu layar */
 @media (min-width: 1100px) and (min-height: 560px) {
-  body {
-    height: 100vh;
-    overflow: hidden;
-  }
-
+  body { height: 100vh; overflow: hidden; }
   .page {
-    max-width: none;
-    height: 100vh;
-    margin: 0;
-    padding: 16px 20px;
-    grid-template-columns: 1fr 1.1fr 1.25fr;
+    max-width: none; height: 100vh; margin: 0; padding: 16px 20px;
+    display: grid; grid-template-columns: 1fr 1.1fr 1.25fr;
     grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr);
-    grid-template-areas:
-      "head    head   stats"
-      "summary cards  log"
-      "quiz    cards  log";
-    gap: 16px;
-    align-items: stretch;
+    grid-template-areas: "head head stats" "summary cards log" "quiz cards log";
+    gap: 16px; align-items: stretch;
   }
-
-  header { grid-area: head; }
-  .stats { grid-area: stats; }
-  .summary-box { grid-area: summary; }
+  header { grid-area: head; display: flex; align-items: center; gap: 18px; text-align: left; }
+  .stats { grid-area: stats; margin: 0; }
+  .summary-box { grid-area: summary; display: flex; flex-direction: column; }
+  .summary-box textarea { flex: 1; height: auto; min-height: 100px; }
   .cards-box { grid-area: cards; grid-column: auto; }
   .quiz-box { grid-area: quiz; }
   .log-box { grid-area: log; grid-column: auto; }
-
-  /* judul dibuat memanjang ke samping supaya hemat tinggi */
-  header {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 4px 18px;
-    text-align: left;
-  }
-
   h1 { font-size: 1.9rem; }
   h1::after { display: none; }
   header p { margin: 0; }
   .theme-btn { margin: 0 0 0 auto; }
-
   .stat { padding: 8px 6px; }
   .stat strong { font-size: 1.35rem; }
-
-  /* tiap kotak punya scroll sendiri kalau isinya kepanjangan */
-  .box {
-    padding: 18px;
-    min-height: 0;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--line) transparent;
-  }
-
-  .box:hover {
-    transform: none;
-    box-shadow: var(--shadow);
-  }
-
-  h2 { margin-bottom: 10px; font-size: 1.15rem; }
-  h3 { margin: 16px 0 8px; }
-  label { margin: 10px 0 4px; }
-  .buttons { margin-top: 10px; }
-  button { padding: 8px 16px; font-size: 0.88rem; }
-  .divider { margin-top: 16px; }
-
-  /* kotak ringkasan: kolom teks mengisi ruang yang tersisa */
-  .summary-box {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .summary-box textarea {
-    flex: 1;
-    height: auto;
-    min-height: 100px;
-  }
-
-  textarea.small { height: 64px; }
-
-  #card {
-    min-height: 130px;
-    padding: 16px;
-    font-size: 1.15rem;
-  }
-
-  .quiz-q {
-    padding: 14px;
-    margin-bottom: 10px;
-    font-size: 1.1rem;
-  }
-
-  .progress { margin-bottom: 12px; }
-  .score { font-size: 1.8rem; }
-  .table-wrap { margin-top: 14px; }
-}
-
-/* Layar landscape yang pendek (misalnya laptop kecil): rapatkan lagi */
-@media (min-width: 1100px) and (min-height: 560px) and (max-height: 800px) {
-  .page { gap: 12px; padding: 12px 16px; }
-  .box { padding: 14px; }
-  #card { min-height: 105px; }
-  h1 { font-size: 1.6rem; }
-  .summary-box textarea { min-height: 70px; }
-  textarea.small { height: 52px; }
+  .box { padding: 18px; min-height: 0; overflow-y: auto; }
+  #card { min-height: 130px; padding: 16px; font-size: 1.15rem; }
+  .quiz-q { padding: 14px; margin-bottom: 10px; font-size: 1.1rem; }
 }
