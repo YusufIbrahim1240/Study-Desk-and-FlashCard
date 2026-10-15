@@ -1,9 +1,9 @@
-// ---------- Langkah 1: data yang perlu diingat ----------
-var cards = [];            // tiap kartu: { question, answer, known }
-var current = 0;           // kartu yang sedang tampil
-var showingAnswer = false; // sedang lihat jawaban atau tidak
+// ---------- Langkah 1: Data Utama ----------
+var cards = [];            
+var current = 0;           
+var showingAnswer = false; 
 
-// ---------- Langkah 2: cari elemen di halaman ----------
+// ---------- Langkah 2: Ambil Elemen ----------
 var notesBox = document.getElementById("notes");
 var summaryText = document.getElementById("summary");
 var cardBox = document.getElementById("card");
@@ -12,7 +12,7 @@ var progressBar = document.getElementById("progressBar");
 var progressText = document.getElementById("progressText");
 var progressPercent = document.getElementById("progressPercent");
 
-// ---------- Langkah 3: simpan & muat kartu (localStorage) ----------
+// ---------- Langkah 3: Storage Flashcard ----------
 function save() {
   try {
     localStorage.setItem("studydesk-cards", JSON.stringify(cards));
@@ -30,7 +30,7 @@ function load() {
   }
 }
 
-// ---------- Langkah 4: memotong teks jadi kalimat ----------
+// ---------- Langkah 4: Pemotong Kalimat ----------
 function getSentences(text) {
   if (!text) return [];
   var sentences = text.match(/[^.!?]+[.!?]/g);
@@ -42,7 +42,7 @@ function getSentences(text) {
   });
 }
 
-// ---------- Langkah 5: meringkas ----------
+// ---------- Langkah 5: Meringkas ----------
 function summarize() {
   if (!notesBox) return;
   var sentences = getSentences(notesBox.value);
@@ -75,7 +75,7 @@ function summarize() {
   }
 }
 
-// ---------- Langkah 6: buat flashcard dari catatan ----------
+// ---------- Langkah 6: Buat Flashcard ----------
 function makeCards() {
   if (!notesBox) return;
   var sentences = getSentences(notesBox.value);
@@ -107,7 +107,7 @@ function makeCards() {
   }
 }
 
-// ---------- Langkah 7: progress belajar ----------
+// ---------- Langkah 7: Update Progress ----------
 function updateProgress() {
   var total = cards.length;
   var knownCount = cards.filter(function (card) {
@@ -124,7 +124,7 @@ function updateProgress() {
   if (progressBar) progressBar.style.width = percent + "%";
 }
 
-// ---------- Langkah 8: tampilkan kartu ----------
+// ---------- Langkah 8: Tampilkan Kartu ----------
 function showCard() {
   updateProgress();
   if (!cardBox) return;
@@ -175,7 +175,6 @@ function previous() {
   showCard();
 }
 
-// ---------- Langkah 9: tandai hafal / belum hafal ----------
 function mark(isKnown) {
   if (cards.length === 0) return;
   cards[current].known = isKnown;
@@ -193,7 +192,6 @@ function resetProgress() {
   showCard();
 }
 
-// ---------- Langkah 10: tambah & hapus kartu ----------
 function addCard() {
   var q = document.getElementById("question");
   var a = document.getElementById("answer");
@@ -219,7 +217,7 @@ function deleteCard() {
   showCard();
 }
 
-// ---------- Langkah 11: sambungkan tombol ke fungsi utama ----------
+// Bind Tombol Flashcard
 var summarizeBtn = document.getElementById("summarizeBtn");
 if (summarizeBtn) summarizeBtn.onclick = summarize;
 
@@ -257,7 +255,7 @@ showCard();
 
 
 // =====================================================
-// FITUR: LOG PROGRESS MINGGUAN
+// FITUR: LOG PROGRESS MINGGUAN (FIXED)
 // =====================================================
 var logs = {};
 var totalWeeks = 8;
@@ -292,7 +290,7 @@ function safeText(text) {
 
 function renderLog() {
   var tableElem = document.getElementById("logTable");
-  if (!tableElem) return; // Pengaman agar tidak error jika tabel belum ada
+  if (!tableElem) return;
 
   var html = "<tr><th>Minggu</th><th>Dikerjakan</th><th>Kendala</th><th></th></tr>";
   var filled = 0;
@@ -336,7 +334,6 @@ function saveWeek() {
   var week = parseInt(weekNo.value);
   if (isNaN(week) || week < 1) return;
 
-  // Tetap simpan meskipun salah satu kolom dikosongkan
   logs[week] = { 
     done: logDone.value.trim() || "-", 
     problem: logProblem.value.trim() || "-" 
@@ -344,7 +341,7 @@ function saveWeek() {
 
   logDone.value = "";
   logProblem.value = "";
-  weekNo.value = week + 1;  // otomatis lanjut ke minggu berikutnya
+  weekNo.value = week + 1;
   saveLog();
   renderLog();
 }
@@ -407,7 +404,7 @@ renderLog();
 
 
 // =====================================================
-// FITUR: MODE KUIS & HARI BELAJAR
+// FITUR: MODE KUIS & STREAK
 // =====================================================
 var quizList = [];
 var quizIndex = 0;

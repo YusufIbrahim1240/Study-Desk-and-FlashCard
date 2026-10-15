@@ -22,11 +22,10 @@
       <div class="stat"><strong id="todayStatus">Belum</strong><span>belajar hari ini</span></div>
     </div>
 
-    <!-- Bagian 1: ringkasan -->
+    <!-- Bagian 1: Ringkas Catatan -->
     <section class="box summary-box">
-      <h2>Ringkas catatan</h2>
+      <h2>1. Ringkas catatan</h2>
 
-      <!-- pilihan: unggah file materi (selain mengetik) -->
       <div class="upload-row">
         <input id="fileInput" class="sr-only" type="file" accept=".txt,.md,.markdown,.csv,.pdf,.docx,.pptx">
         <label for="fileInput" class="file-btn">Unggah file</label>
@@ -41,11 +40,10 @@
       <p id="summary" class="result"></p>
     </section>
 
-    <!-- Bagian 2: flashcard + progress -->
+    <!-- Bagian 2: Flashcard -->
     <section class="box cards-box">
       <h2>2. Flashcard</h2>
 
-      <!-- progress belajar -->
       <div class="progress-info">
         <span id="progressText">0 dari 0 kartu hafal</span>
         <span id="progressPercent">0%</span>
@@ -78,7 +76,7 @@
       </div>
     </section>
 
-    <!-- Bagian 3: mode kuis -->
+    <!-- Bagian 3: Mode Kuis -->
     <section class="box quiz-box">
       <h2>3. Mode kuis</h2>
 
@@ -113,7 +111,7 @@
       </div>
     </section>
 
-    <!-- Bagian 4: log progress mingguan -->
+    <!-- Bagian 4: Log Progress Mingguan -->
     <section class="box log-box">
       <h2>4. Log progress mingguan</h2>
 
@@ -140,7 +138,7 @@
       <textarea id="logProblem" class="small" placeholder="Contoh: Kesulitan dalam prompting..."></textarea>
 
       <div class="buttons">
-        <button id="saveWeekWeekBtn" id="saveWeekBtn">Simpan minggu ini</button>
+        <button id="saveWeekBtn">Simpan minggu ini</button>
         <button id="copyLogBtn" class="soft">Salin untuk spreadsheet</button>
       </div>
 
@@ -149,7 +147,7 @@
 
   </div>
 
-  <!-- Library untuk membaca PDF (pdf.js) dan Word/PowerPoint (JSZip). Butuh internet. -->
+  <!-- Library external untuk membaca PDF (pdf.js) dan Word/PPT (JSZip) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="script.js"></script>
